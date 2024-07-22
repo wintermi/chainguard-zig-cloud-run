@@ -1,0 +1,41 @@
+name: Zig - Build
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+concurrency:
+  # Cancels pending runs when a PR gets updated.
+  group: ${{ github.head_ref || github.run_id }}-${{ github.actor }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+        zig-version:
+          - 0.13.0
+    steps:
+      - uses: actions/checkout@v4.1.7
+        with:
+          submodules: true
+      - name: Setup Zig ${{ matrix.zig-version }}
+        uses: goto-bus-stop/setup-zig@v2.2.0
+        with:
+          version: ${{ matrix.zig-version }}
+      - name: Display Zig version
+        run: zig version
+      - name: Check Zig Code Format
+        run: zig fmt --check *.zig src/*.zig
+        working-directory: src
+      - name: Execute Zig Build
+        run: zig build
+        working-directory: src
+      - name: Execute Zig Test
+        run: zig build test
+        working-directory: src

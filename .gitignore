@@ -1,0 +1,23 @@
+# MacOS
+.cache
+.DS_Store
+
+# IDE
+.idea/
+*.sublime-project
+*.sublime-workspace
+.vscode/
+*.code-workspace
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.o
+*.d
+
+# Exclude `zig` compiled files and executables
+.zig-cache/
+zig-out/
