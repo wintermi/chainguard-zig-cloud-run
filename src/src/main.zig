@@ -14,8 +14,9 @@
 
 const std = @import("std");
 const zap = @import("zap");
+const api = @import("api.zig");
 
-// This handles any fallback requests and sends a 404
+// This handles any fallback requests by sending a 404
 fn on_request(r: zap.Request) void {
     r.setStatus(.not_found);
 }
@@ -26,13 +27,13 @@ pub fn main() !void {
     }){};
     const allocator = gpa.allocator();
 
-    // we scope everything that can allocate within this block for leak detection
+    // We scope everything that can allocate into this block for leak detection
     {
         // setup listener
         var listener = zap.Endpoint.Listener.init(
             allocator,
             .{
-                .port = 3000,
+                .port = 8080,
                 .on_request = on_request,
                 .log = true,
                 .max_clients = 100000,
@@ -41,10 +42,13 @@ pub fn main() !void {
         );
         defer listener.deinit();
 
-        // listen
-        try listener.listen();
+        // register endpoint with the listener
+        var apiEndpoint = api.init(allocator, "/api/v1");
+        defer apiEndpoint.deinit();
+        try listener.register(apiEndpoint.endpoint());
 
-        // and run
+        // Start listening
+        try listener.listen();
         zap.start(.{
             .threads = 2,
             .workers = 2,
