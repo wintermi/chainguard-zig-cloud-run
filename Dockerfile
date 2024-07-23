@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM cgr.dev/chainguard/zig AS build
+FROM cgr.dev/chainguard/zig AS builder
 
 WORKDIR /work
-COPY src/ /work/
+COPY build/ /work/
 RUN zig build -Doptimize=ReleaseFast
 
 FROM cgr.dev/chainguard/glibc-dynamic
-COPY --from=build /work/zig-out/bin/service /app/service
+COPY --from=builder /work/zig-out/bin/service /app/service
 CMD ["/app/service"]

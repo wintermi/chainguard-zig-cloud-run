@@ -32,10 +32,10 @@ jobs:
         run: zig version
       - name: Check Zig Code Format
         run: zig fmt --check *.zig src/*.zig
-        working-directory: src
+        working-directory: build
       - name: Execute Zig Build
         run: zig build
-        working-directory: src
+        working-directory: build
       - name: Execute Zig Test
         run: zig build test
-        working-directory: src
+        working-directory: build
