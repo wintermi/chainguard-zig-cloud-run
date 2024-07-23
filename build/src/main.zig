@@ -54,4 +54,8 @@ pub fn main() !void {
             .workers = 2,
         });
     }
+
+    // Output whether any memory leaks were identified when ZAP is shut down
+    const has_leaked = gpa.detectLeaks();
+    std.log.debug("Did we detect any memory leaks: {}\n", .{has_leaked});
 }

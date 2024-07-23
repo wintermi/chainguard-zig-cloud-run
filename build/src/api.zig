@@ -15,8 +15,6 @@
 const std = @import("std");
 const zap = @import("zap");
 
-// an Endpoint
-
 pub const Self = @This();
 
 alloc: std.mem.Allocator = undefined,
@@ -35,7 +33,9 @@ pub fn init(
     };
 }
 
-pub fn deinit(_: *Self) void {}
+pub fn deinit(self: *Self) void {
+    self.alloc.free(self.ep.settings.path);
+}
 
 pub fn endpoint(self: *Self) *zap.Endpoint {
     return &self.ep;
