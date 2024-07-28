@@ -29,7 +29,7 @@ gcloud services enable \
     run.googleapis.com
 
 echo "Creating ${SERVICE_NAME} using ${IMAGE_NAME}"
-gcloud beta run deploy ${SERVICE_NAME} \
+gcloud run deploy ${SERVICE_NAME} \
     --image ${IMAGE_NAME} \
     --no-allow-unauthenticated \
     --concurrency=50 \
