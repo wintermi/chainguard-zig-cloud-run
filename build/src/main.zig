@@ -14,6 +14,7 @@
 
 const std = @import("std");
 const zap = @import("zap");
+const config = @import("config.zig");
 const api = @import("api.zig");
 
 // This handles any fallback requests by sending a 404
@@ -29,15 +30,20 @@ pub fn main() !void {
 
     // We scope everything that can allocate into this block for leak detection
     {
+        // Load the configuration
+        var cfg = config.init(allocator);
+        try cfg.GetVariables();
+
         // setup listener
         var listener = zap.Endpoint.Listener.init(
             allocator,
             .{
-                .port = 8080,
+                .port = cfg.port,
                 .on_request = on_request,
                 .log = true,
                 .max_clients = 100000,
                 .max_body_size = 100 * 1024 * 1024,
+                .timeout = cfg.timeout_seconds,
             },
         );
         defer listener.deinit();
